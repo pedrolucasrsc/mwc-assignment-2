@@ -38,6 +38,7 @@ public class StepsFragment extends Fragment {
     private Sensor stepDetectorSensor;
     // TODO 2: Create an object from SensorManager class
     private SensorManager sensorManager;
+    private StepAppOpenHelper openHelper;
 
     private StepCounterListener sensorListener;
 
@@ -48,6 +49,15 @@ public class StepsFragment extends Fragment {
 
         binding = FragmentStepsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Load num_steps from database
+        long timeInMillis = System.currentTimeMillis();
+        SimpleDateFormat jdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+        jdf.setTimeZone(TimeZone.getTimeZone("GMT+2"));
+        final String dateTimestamp = jdf.format(timeInMillis);
+        String currentDay = dateTimestamp.substring(0,10);
+        stepsCounter = openHelper.loadSingleRecord(getContext(), currentDay);
+
 
         CircularProgressIndicator progressBar = (CircularProgressIndicator)  root.findViewById(R.id.progressBar);
         progressBar.setMax(100);
