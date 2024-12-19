@@ -10,6 +10,8 @@ import android.hardware.SensorEventListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
+
+import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.TextView;
@@ -48,7 +50,7 @@ public class  StepCounterListener implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        // TODO 8: Check the type of the sensor, this is helpful in case of multiple sensors (you will need for the next assignment)
+        Log.d("Sensor Triggered", "Sensor type: " + sensorEvent.sensor.getType());
         switch (sensorEvent.sensor.getType())
         {
             case Sensor.TYPE_LINEAR_ACCELERATION:
@@ -94,6 +96,10 @@ public class  StepCounterListener implements SensorEventListener {
                 // TODO (Assignment 02): Use the STEP_DETECTOR  to count the number of steps
                 // TODO (Assignment 02): The STEP_DETECTOR is triggered every time a step is detected
                 // TODO (Assignment 02): The sensorEvent.values of STEP_DETECTOR has only one value for the detected step count
+                if (sensorEvent.values.length > 0) {
+                    countSteps(sensorEvent.values[0]);
+                }
+                break;
 
         }
     }
@@ -142,7 +148,17 @@ public class  StepCounterListener implements SensorEventListener {
 
     private void countSteps(float step)
     {
+        accStepCounter += (int) step;
+        Log.d("ACC STEPS (from STEP_DETECTOR): ", String.valueOf(accStepCounter));
 
+        //Update the TextView with the number of steps calculated using ACC. sensor
+        stepCountsView.setText(String.valueOf(accStepCounter));
+
+        //Add the new steps to the database
+        saveStepInDatabase();
+
+        //Set the progress of the CircularProgressIndicator variable
+        progressBar.setProgress(accStepCounter);
     }
     private void saveStepInDatabase()
     {

@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.example.stepappv4.StepAppOpenHelper;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.TimeZone;
 
 public class StepsFragment extends Fragment {
@@ -33,6 +35,7 @@ public class StepsFragment extends Fragment {
     private int stepsCounter = 0;
     // TODO 1: Create an object from Sensor class
     private Sensor accSensor;
+    private Sensor stepDetectorSensor;
     // TODO 2: Create an object from SensorManager class
     private SensorManager sensorManager;
 
@@ -57,6 +60,8 @@ public class StepsFragment extends Fragment {
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         // TODO 4: Assign ACC. sensor
         accSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        // TODO 8: Check the type of the sensor, this is helpful in case of multiple sensors (you will need for the next assignment)
+        stepDetectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
 
 
         // Toggle group button
@@ -74,7 +79,8 @@ public class StepsFragment extends Fragment {
 
                         sensorListener = new StepCounterListener(getContext(), stepsTextView, progressBar);
 
-                        sensorManager.registerListener(sensorListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+//                        sensorManager.registerListener(sensorListener, accSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                        sensorManager.registerListener(sensorListener, stepDetectorSensor, SensorManager.SENSOR_DELAY_NORMAL);
                         Toast.makeText(getContext(), R.string.start_text, Toast.LENGTH_LONG).show();
                     }
                     else
